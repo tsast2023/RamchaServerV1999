@@ -74,6 +74,11 @@ getAll : async (req, res) => {
     res.json(allAvis)
 
 },
+getAllAvis : async (req, res) => {
+    const allAvis = await Avis.find();
+    res.json(allAvis)
+
+},
 
 }
 
