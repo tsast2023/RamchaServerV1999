@@ -50,12 +50,12 @@ add : async (req , res)=>{
         const keyIterator = globalMap.keys();
         const keysArray = Array.from(keyIterator);
         console.log("connected users:" , keysArray);
-        const workers = await users.find({role:"Worker" , _id :{ $in: keysArray , $ne: user} ,service :"Traiteur" });
+        const workers = await users.find({role:"Worker" , _id :{ $in: keysArray , $ne: user} ,service :nomService });
         await newOrder.save()
         console.log("workers" , workers)
         const workersIdlist = [];
         const socketIdsList = []
-        console.log('globalmap' , globalMap.get('650d9a83800523436c32f449'))
+       
       getNearestWorkers(workers, location)
       .then(result => {
       console.log("result:" , result);

@@ -22,7 +22,7 @@ function sendMessageToSocketIds(key, message) {
   const stringLocation = locationss.map(loc => `${loc.location}`).join(';');
   console.log("string location", stringLocation)
 
-    const distanceMatrixApi =`https://dev.virtualearth.net/REST/v1/Routes/DistanceMatrix?origins=${stringLocation}&destinations=35.821575863921325,10.578255617886242&travelMode=driving&key=Ak8acI2md4vts6Wkau8r_1evGaZwBN-xgT87WyCfFLg0Z_ICnoNz0PHACm3-oMRA`
+    const distanceMatrixApi =`https://dev.virtualearth.net/REST/v1/Routes/DistanceMatrix?origins=${stringLocation}&destinations=${location}&travelMode=driving&key=Ak8acI2md4vts6Wkau8r_1evGaZwBN-xgT87WyCfFLg0Z_ICnoNz0PHACm3-oMRA`
     
   const req = http.request(distanceMatrixApi, (res) => {
     let data = '';

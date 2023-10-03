@@ -14,7 +14,7 @@ socket.initializeSocket(server);
 
 const cookieParser = require('cookie-parser')
 app.use(express.json({ limit: '10gb' }))  
-app.use(cors({origin: ["http://localhost:3000"] , credentials:true }))
+app.use(cors({origin: ["http://localhost:3000" , "http://localhost:3001"] , credentials:true }))
 app.use(cookieParser());
 require('dotenv').config()
 const UserRoute = require('./routes/User')
