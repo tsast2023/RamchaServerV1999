@@ -74,7 +74,6 @@ register : async (req , res)=>{
 login : async (req , res) =>{
     try {
         const {email , password} = req.body;
-        
         const user = await users.findOne({email})
         if(!user) return res.status(400).json({msg :'user does not exist.'})
 
@@ -92,7 +91,7 @@ login : async (req , res) =>{
         socket.sendOrder(user._id);
 
         res.json({accesstoken});
-        
+        // console.log(accesstoken)
         
     } catch (error) {
         return res.status(500).json({msg : error.message}) 
@@ -223,10 +222,19 @@ sendLocation : async(req,res)=>{
     try{
         const updateLocation = await users.updateOne({_id : req.body.id} , {location : req.body.location})
         res.json(updateLocation)
+       
 
     }catch(err){
         res.status(500).json(err)
     }
+},
+getCount : async (req,res)=>{
+    try{
+        const Userss = await users.find();
+        res.json(Userss.length)
+      }catch(err){
+      res.json(err)
+      }
 }
 
 }

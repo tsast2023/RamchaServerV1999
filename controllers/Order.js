@@ -5,7 +5,7 @@ const globalMap = require('../globalMap');
 const {sendMessage} =require("../socket")
 const users = require('../models/User.model')
 const {getNearestWorkers} = require("../Functions")
-const {getIo} = require('../socket')
+const {getIo} = require('../socket');
 class APIfeatures {
     constructor(query , queryString){
         this.query = query ; 
@@ -46,24 +46,27 @@ add : async (req , res)=>{
     try{
         const {nomService , description ,  location  , images  }=req.body;
         const user= req.params.id;
-        const newOrder=new order ({nomService  , description , location , images , user });
+
         const keyIterator = globalMap.keys();
         const keysArray = Array.from(keyIterator);
         console.log("connected users:" , keysArray);
         const workers = await users.find({role:"Worker" , _id :{ $in: keysArray , $ne: user} ,service :nomService });
-        await newOrder.save()
+        
         console.log("workers" , workers)
         const workersIdlist = [];
         const socketIdsList = []
-       
+
       getNearestWorkers(workers, location)
       .then(result => {
       console.log("result:" , result);
       result.forEach(item => {
         workersIdlist.push(item);
         
-      });
-      console.log("workersIdlist" , workersIdlist)
+        });
+
+    console.log("workersIdlist" , workersIdlist)
+    const newOrder=new order ({nomService  , description , location , images , user , workers: workersIdlist.map(workerid => ({ workerid })) , status: "created" });
+     newOrder.save()
     workersIdlist.forEach(userid => {
         console.log("userid:" ,userid)
         if (globalMap.get(userid)) {
@@ -74,6 +77,8 @@ add : async (req , res)=>{
         }
       });
       console.log('liste des socketids' , socketIdsList)
+    
+      
       const event = "new order"
       sendMessage(socketIdsList , newOrder ,event )
         if(socketIdsList){
@@ -81,7 +86,8 @@ add : async (req , res)=>{
         }else{
             res.send('workers not available')
         }
-
+        console.log('hello from the bottom:',workersIdlist)
+        
 
       }).catch(error => {
     console.error(error);
@@ -97,7 +103,9 @@ add : async (req , res)=>{
 
 sendPrice: async(req,res)=>{
     try{
-        const orderwithPrice = await  order.findOneAndUpdate({ _id: req.body.orderId },{ $push: { workers: {name: req.body.name ,workerid: req.body.workerId , price:req.body.price }  } }).lean();
+        const workerrs = await users.find({_id : req.body.workerId})
+        
+        const orderwithPrice = await  order.findOneAndUpdate({ _id: req.body.orderId , "workers.workerid": req.body.workerId },{ $set:{"workers.$.name" : workerrs.name , "workers.$.price": req.body.price}  }).lean();
         console.log(orderwithPrice)
         
         const socketId = globalMap.get(orderwithPrice.user.toString());
@@ -117,15 +125,16 @@ selectWorker: async (req,res)=>{
     console.log(updatedOrder)
     console.log(req.body)
     updatedOrder.workers = updatedOrder.workers.filter(obj => obj.workerid === req.body.workerId);
+    updatedOrder.status = "en cours";
     updatedOrder.save();
-     
+
     const socketId = globalMap.get(req.body.workerId);
     console.log("socketid:", socketId)
     const event = "select worker"
     sendMessage(socketId ,updatedOrder , event  )
     res.json(updatedOrder)
     }catch(err){
-      res.json(err)
+        res.json(err)
     }
 
 },
@@ -144,8 +153,6 @@ confirmFromWorker : async(req,res)=>{
     }
 
 },
-
-
 
 getorder : async (req , res) =>{
     try{
@@ -196,7 +203,7 @@ getAll : async (req, res) => {
 },
 getAllbyuser : async (req, res) => {
     try{
-        console.log(req.query.user)
+        console.log("user:", req.query.user)
         const allOrders = await order.find({user: req.query.user});
         res.json(allOrders);
     }catch(err){
@@ -205,6 +212,22 @@ getAllbyuser : async (req, res) => {
     }
     
 },
+getAllbyworker : async (req,res) =>{
+    try{
+      const ordeers = await order.find({'workers.workerid': req.params.id})
+      res.json(ordeers)
+    }catch(err){
+    res.json(err)
+    }
+},
+getCount : async (req,res)=>{
+    try{
+        const ordeers = await order.find();
+        res.json(ordeers.length)
+      }catch(err){
+      res.json(err)
+      }
+}
 
 }
 

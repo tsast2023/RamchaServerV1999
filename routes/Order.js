@@ -12,6 +12,6 @@ router.post('/sendprice',orderController.sendPrice);
 router.post('/selectworker', orderController.selectWorker);
 router.post('/getUserorders' , orderController.getAllbyuser)
 router.post('/confirmFromWorker' , orderController.confirmFromWorker)
-
-
+router.get('/getAllOrdersByWorker/:id' , orderController.getAllbyworker)
+router.get('/getCount',orderController.getCount)
 module.exports = router

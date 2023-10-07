@@ -8,7 +8,7 @@ router.get('/getAll',serviceController.getAll);
 router.get('/getService/:id',serviceController.getService);
 router.delete('/delete/:id',serviceController.delete);
 router.put('/update/:id',serviceController.update);
-
+router.get('/getCount',serviceController.getCount)
 
 
 

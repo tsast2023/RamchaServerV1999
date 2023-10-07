@@ -83,6 +83,14 @@ getAllServices : async (req, res) => {
 getAll : async (req,res) =>{
     const allServices = await services.find();
     res.json(allServices);
+},
+getCount : async (req,res)=>{
+    try{
+        const servicess = await services.find();
+        res.json(servicess.length)
+      }catch(err){
+      res.json(err)
+      }
 }
 
 

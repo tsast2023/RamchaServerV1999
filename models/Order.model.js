@@ -3,6 +3,7 @@ const orderSchema = new mongoose.Schema({
 
     nomService: {type: String  },
     description : {type : String },
+    status : {type : String},
     date: {type: String },
     images: 
         {

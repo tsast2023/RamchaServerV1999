@@ -7,7 +7,7 @@ router.post('/add/:id' , auth, AvisController.add);
 router.get('/getAll',auth , authAdmin,AvisController.getAll);
 router.get('/getAvis/:id',auth , AvisController.getavis);
 router.delete('/delete/:id',auth,authAdmin ,AvisController.delete);
-
+router.get('/getCount',AvisController.getCount)
 
 
 

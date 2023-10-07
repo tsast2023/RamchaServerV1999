@@ -79,6 +79,14 @@ getAllAvis : async (req, res) => {
     res.json(allAvis)
 
 },
+getCount : async (req,res)=>{
+    try{
+        const avisss = await Avis.find();
+        res.json(avisss.length)
+      }catch(err){
+      res.json(err)
+      }
+}
 
 }
 
