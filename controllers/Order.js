@@ -6,6 +6,7 @@ const {sendMessage} =require("../socket")
 const users = require('../models/User.model')
 const {getNearestWorkers} = require("../Functions")
 const {getIo} = require('../socket');
+const axios = require('axios')
 class APIfeatures {
     constructor(query , queryString){
         this.query = query ; 
@@ -80,7 +81,7 @@ add : async (req , res)=>{
     
       
       const event = "new order"
-      sendMessage(socketIdsList , newOrder ,event )
+      sendMessage(socketIdsList , "new order" ,event )
         if(socketIdsList){
             res.json({workers})
         }else{
@@ -112,7 +113,7 @@ sendPrice: async(req,res)=>{
         console.log(globalMap)
         console.log("socketid:",socketId)
         const event = "send price"
-        sendMessage(socketId ,orderwithPrice , event  )
+        sendMessage(socketId , "sendprice" , event  )
         res.json('updated!!')
     }catch(err){
         res.json(err)
@@ -131,7 +132,7 @@ selectWorker: async (req,res)=>{
     const socketId = globalMap.get(req.body.workerId);
     console.log("socketid:", socketId)
     const event = "select worker"
-    sendMessage(socketId ,updatedOrder , event  )
+    sendMessage(socketId ,"select worker" , event  )
     res.json(updatedOrder)
     }catch(err){
         res.json(err)
@@ -142,10 +143,11 @@ selectWorker: async (req,res)=>{
 confirmFromWorker : async(req,res)=>{
     try{
         const orderLast  = await order.findOne({_id: req.body.orderId});
+        orderLast.status = "completed";
         const socketId = globalMap.get(orderLast.user.toString());
             console.log("socketid:", socketId)
             const event = "confirm from worker"
-            sendMessage(socketId ,orderLast , event  )
+            sendMessage(socketId ,"ready to go" , event  )
             res.json({msg: "order confirmed"})
     }catch(err){
         res.json(err)
@@ -227,7 +229,28 @@ getCount : async (req,res)=>{
       }catch(err){
       res.json(err)
       }
-}
+},
+calculateDistance : async (req, res) => {
+    try { 
+        const orderD = await order.findOne({_id : req.body.orderId});
+        const worker = await users.findOne({_id : req.body.workerId});
+        console.log(orderD.location ,worker.location )
+      const distanceMatrixApi = `https://dev.virtualearth.net/REST/v1/Routes/DistanceMatrix?origins=${worker.location}&destinations=${orderD.location}&travelMode=driving&key=Ak8acI2md4vts6Wkau8r_1evGaZwBN-xgT87WyCfFLg0Z_ICnoNz0PHACm3-oMRA`;
+
+      const response = await axios.get(distanceMatrixApi);
+  
+      // Extract the data you need from the response object
+      const responseData = {
+        travelDistance: response.data.resourceSets[0].resources[0].results[0].travelDistance,
+        travelDuration: response.data.resourceSets[0].resources[0].results[0].travelDuration,
+      };
+  
+      res.json(responseData);
+    } catch (err) {
+      res.json(err);
+      console.error(err);
+    }
+  }
 
 }
 

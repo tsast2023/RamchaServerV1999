@@ -4,8 +4,10 @@ const auth = require('../middlewares/auth.js')
 const authAdmin = require("../middlewares/authAdmin")
 
 router.post('/add/:id' , auth, AvisController.add);
-router.get('/getAll',auth , authAdmin,AvisController.getAll);
+router.get('/getAll',auth,AvisController.getAll);
 router.get('/getAvis/:id',auth , AvisController.getavis);
+router.get('/getAllAvis' , auth , AvisController.getAllAvis);
+
 router.delete('/delete/:id',auth,authAdmin ,AvisController.delete);
 router.get('/getCount',AvisController.getCount)
 
