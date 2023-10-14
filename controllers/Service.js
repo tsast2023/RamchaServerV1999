@@ -35,9 +35,9 @@ class APIfeatures {
 }
 const serviceCtrl ={
 add : async (req , res)=>{
-  const {nom , description , img }=req.body
+  const {nom , description , img , icon }=req.body
   const newService=new services ({
-    nom , description , img
+    nom , description , img , icon
  })
  await newService.save()
  res.json({newService})
@@ -65,8 +65,8 @@ delete : async (req, res) => {
 }, 
 update : async (req, res) => {
     try{
-        const {nom , description , img } = req.body;
-        const serviceU = await services.findOneAndUpdate({_id : req.params.id} ,{nom , description , img} );
+        const {nom , description , img , icon} = req.body;
+        const serviceU = await services.findOneAndUpdate({_id : req.params.id} ,{nom , description , img , icon} );
         res.json({serviceU})
     }catch(err){
         return res.status(500).json({message : err.message}) 

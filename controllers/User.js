@@ -161,17 +161,20 @@ getAll : async(req , res) => {
         return res.status(500).json({message : error.message})
     }
 },
-UpdateUser : async(req,res) =>{
+UpdateUser: async (req, res) => {
     try {
-        console.log("body of aziz", req.body)
-        console.log("id of aziz",req.params.id)
-        const {nom , email , password  , numtel,ville , region , img } = req.body;
-        const userrr =  await users.findOneAndUpdate(({_id : req.params.id},{nom , email , numtel ,password , ville , region , img }))
-        res.json(userrr) 
-        
+        console.log("body of aziz", req.body);
+        console.log("id of aziz", req.params.id);
+        const { nom, email, password, numtel, ville, region, img } = req.body;
+        const userrr = await users.findOneAndUpdate(
+            { _id: req.params.id },
+            { nom, email, numtel, password, ville, region, img },
+            { new: true } // Add this option to return the updated document
+        );
+        res.json(userrr);
     } catch (error) {
-        console.log(error.message)
-        return res.status(500).json({message : error.message}) 
+        console.log(error.message);
+        return res.status(500).json({ message: error.message });
     }
 },
 deleteUsers : async(req,res)=>{

@@ -47,7 +47,7 @@ add : async (req , res)=>{
     try{
         const {nomService , description ,  location  , images  }=req.body;
         const user= req.params.id;
-
+        console.log("req.body:" ,req.body)
         const keyIterator = globalMap.keys();
         const keysArray = Array.from(keyIterator);
         console.log("connected users:" , keysArray);
@@ -106,7 +106,7 @@ sendPrice: async(req,res)=>{
     try{
         const workerrs = await users.find({_id : req.body.workerId})
         
-        const orderwithPrice = await  order.findOneAndUpdate({ _id: req.body.orderId , "workers.workerid": req.body.workerId },{ $set:{"workers.$.name" : workerrs.name , "workers.$.price": req.body.price}  }).lean();
+        const orderwithPrice = await  order.findOneAndUpdate({ _id: req.body.orderId , "workers.workerid": req.body.workerId },{ $set:{"workers.$.name" : workerrs.nom , "workers.$.price": req.body.price}}).lean();
         console.log(orderwithPrice)
         
         const socketId = globalMap.get(orderwithPrice.user.toString());

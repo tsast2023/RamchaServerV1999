@@ -37,8 +37,8 @@ const avisCtrl ={
 add : async (req , res)=>{
     
     try{
-        const {nomUser , description , date , nomWorker  , nbrate }=req.body
-        const newavis=new Avis ({nomUser , description , date , nomWorker  , nbrate })
+        const {nomUser , description , date , nomWorker  , nbrating }=req.body
+        const newavis=new Avis ({nomUser , description , date , nomWorker  , nbrating })
        await newavis.save();
        res.json({newavis})
     }catch(err){

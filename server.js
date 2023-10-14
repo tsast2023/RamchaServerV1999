@@ -20,7 +20,8 @@ require('dotenv').config()
 const UserRoute = require('./routes/User')
 const ServiceRoute = require('./routes/Service')
 const OrderRoute = require('./routes/Order');
-const AvisRoutes = require('./routes/Avis')       
+const AvisRoutes = require('./routes/Avis');       
+const OrderModel = require('./models/Order.model');
 //database connexion
 require('./db/cnx');
 //middlewares
@@ -29,8 +30,9 @@ app.use('/api/service' , ServiceRoute);
 app.use('/api/order' , OrderRoute);
 app.use('/api/avis' , AvisRoutes);
 
-app.get('/test', (req, res) => {
-    res.send('Test route works!');
+app.delete('/test', (req, res) => {
+    OrderModel.collection.drop();
+    res.send('deleted')
 });
 
 
